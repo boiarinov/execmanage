@@ -5,120 +5,644 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>exec && manage</title>
 
-  <!-- Bootstrap + Google Font: Manrope -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* ================= GLOBAL THEME SETTINGS ================= */
     :root {
-      --font-family: 'Manrope', sans-serif;
-      --bg-main: #dfdfe0;               /* 🔧 Main page background */
-      --text-main: #2c2c2c;             /* 🔧 Main text color */
-      --accent-color: #2b2c2e;          /* 🔧 Accent color */
-      --footer-bg: linear-gradient(135deg, #222324 0%, #172d4f 100%);
-      --footer-header: #ffffff;         /* 🔧 Footer heading color */
-      --footer-text: #c4c4c4;           /* 🔧 Footer paragraph text color */
-      --button-bg: #122148;             /* 🔧 Button background */
-      --button-text: #ffffff;           /* 🔧 Button text */
+      --black:    #111213;
+      --charcoal: #1c1d1f;
+      --graphite: #2b2c2e;
+      --mid:      #4a4b4d;
+      --silver:   #9a9b9d;
+      --mist:     #d4d5d6;
+      --white:    #f4f4f5;
+      --accent:   #c6bfaa;
+      --serif:    'DM Serif Display', Georgia, serif;
+      --sans:     'DM Sans', system-ui, sans-serif;
     }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: var(--font-family);
-      background-color: var(--bg-main);
-      color: var(--text-main);
+      font-family: var(--sans);
+      background-color: var(--black);
+      color: var(--mist);
+      overflow-x: hidden;
     }
 
-    .text-accent {
-      color: var(--accent-color) !important;
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: .6;
     }
 
-    .bg-header {
-      background: var(--footer-bg);
-      color: white;
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(17,18,19,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
     }
 
-    .footer-header {
-      color: var(--footer-header);
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: brightness(1.1);
+    }
+
+    .nav-wordmark {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--white);
+      letter-spacing: .01em;
+    }
+    .nav-wordmark span { color: var(--accent); }
+
+    .nav-cta {
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(200,168,75,.35);
+      padding: .45rem 1.1rem;
+      border-radius: 2px;
+      transition: background .25s, color .25s;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--black); }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 82vh;
+      display: flex;
+      align-items: center;
+      padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 6vw, 6rem);
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -6%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(55vw, 680px);
+      height: min(55vw, 680px);
+      background:
+        linear-gradient(135deg, rgba(200,168,75,.06) 0%, transparent 55%),
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 38px,
+          rgba(255,255,255,.025) 38px,
+          rgba(255,255,255,.025) 39px
+        );
+      border: 1px solid rgba(255,255,255,.04);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .hero-line {
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,168,75,.4) 40%, transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      animation: fadeUp .9s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-eyebrow {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.08;
+      color: var(--white);
+      margin-bottom: 1.8rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--silver);
+      max-width: 540px;
+      margin-bottom: 2.8rem;
+    }
+    .hero-desc strong { color: var(--mist); font-weight: 500; }
+
+    .btn-primary-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      background: var(--accent);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: .85rem;
       font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: .9rem 2rem;
+      border-radius: 2px;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(200,168,75,.22);
+    }
+    .btn-primary-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(200,168,75,.35);
+    }
+    .btn-primary-hero svg { flex-shrink: 0; }
+
+    /* ── DIVIDER ──────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08) 30%, rgba(255,255,255,.08) 70%, transparent);
+      margin: 0 clamp(1.5rem, 5vw, 4rem);
     }
 
-    .btn-accent {
-      background-color: var(--button-bg);
-      color: var(--button-text);
-      border: none;
+    /* ── TIMELINE ─────────────────────────────────────── */
+    .timeline-section {
+      padding: clamp(4rem, 7vw, 7rem) clamp(1.5rem, 6vw, 6rem);
     }
 
-    .btn-accent:hover {
-      background-color: #b89b26;
+    .section-label {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.07);
     }
 
-    footer.bg-header p {
-      color: var(--footer-text);
-      font-size: 0.9rem;
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 2.6rem;
+    }
+
+    .timeline-item {
+      position: relative;
+      animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both;
+    }
+    .timeline-item:nth-child(1) { animation-delay: .1s; }
+    .timeline-item:nth-child(2) { animation-delay: .2s; }
+    .timeline-item:nth-child(3) { animation-delay: .3s; }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: calc(-1.5rem - 4px);
+      top: .35rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--graphite);
+      border: 1.5px solid var(--mid);
+      transition: border-color .2s, background .2s;
+    }
+    .timeline-item:hover::before {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .timeline-year {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: .45rem;
+    }
+
+    .timeline-role {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--white);
+      margin-bottom: .3rem;
+      line-height: 1.35;
+    }
+
+    .timeline-org {
+      font-size: .88rem;
+      font-weight: 300;
+      color: var(--silver);
+      line-height: 1.6;
+    }
+
+    .timeline-sub {
+      margin-top: .8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+    }
+
+    .timeline-sub-item {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      font-size: .88rem;
+      font-weight: 300;
+      color: var(--silver);
+      line-height: 1.55;
+    }
+    .timeline-sub-item::before {
+      content: '↳';
+      color: var(--mid);
+      flex-shrink: 0;
+      margin-top: .05em;
+    }
+
+    /* ── COMMUNITY BAND ───────────────────────────────── */
+    .community-band {
+      background: var(--charcoal);
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: clamp(3.5rem, 6vw, 6rem) clamp(1.5rem, 6vw, 6rem);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .community-band { grid-template-columns: 1fr; }
+    }
+
+    .community-tag {
+      display: inline-block;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(200,168,75,.1);
+      border: 1px solid rgba(200,168,75,.2);
+      padding: .28rem .75rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .community-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: .9rem;
+    }
+
+    .community-desc {
+      font-size: .95rem;
+      font-weight: 300;
+      color: var(--silver);
+      line-height: 1.75;
+      max-width: 520px;
+    }
+    .community-desc strong { color: var(--mist); font-weight: 500; }
+
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: transparent;
+      color: var(--accent);
+      font-family: var(--sans);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: .85rem 1.7rem;
+      border: 1px solid rgba(200,168,75,.45);
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: background .25s, color .25s, box-shadow .25s;
+    }
+    .btn-tg:hover {
+      background: var(--accent);
+      color: var(--black);
+      box-shadow: 0 4px 20px rgba(200,168,75,.3);
+    }
+
+    /* ── FOOTER ───────────────────────────────────────── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 6vw, 6rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    @media (max-width: 580px) {
+      footer { grid-template-columns: 1fr; }
+    }
+
+    .footer-wordmark {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      color: var(--white);
+      display: block;
+      margin-bottom: .75rem;
+    }
+    .footer-wordmark span { color: var(--accent); }
+
+    .footer-tagline {
+      font-size: .85rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    .footer-imprint h6 {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 1rem;
+    }
+    .footer-imprint p {
+      font-size: .8rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.9;
+    }
+
+    .footer-bottom {
+      grid-column: 1 / -1;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: .75rem;
+      font-weight: 300;
+      color: var(--mid);
+    }
+
+    /* Powered-by pill */
+    .powered-by {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      font-weight: 400;
+      color: var(--mid);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      padding: .34rem .85rem .34rem .7rem;
+      border-radius: 100px;
+    }
+    .powered-sep {
+      width: 1px;
+      height: 12px;
+      background: rgba(255,255,255,.1);
+      flex-shrink: 0;
+    }
+    .powered-item {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      text-decoration: none;
+      color: var(--mid);
+      font-size: .72rem;
+      transition: color .2s;
+    }
+    .powered-item.tg:hover { color: #26a5e4; }
+    .powered-item.cl:hover { color: #d97757; }
+
+    /* ── SCROLL REVEAL ────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Header -->
-  <header class="py-4 bg-header text-white shadow-sm">
-    <div class="container text-center">
-      <h1 class="display-6 fw-bold">exec && manage</h1>
-    </div>
-  </header>
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="Execmanage_logo.PNG" alt="exec && manage logo" />
+      <span class="nav-wordmark">exec <span>&&</span> manage</span>
+    </a>
+    <a href="https://t.me/talktaxes" target="_blank" class="nav-cta">Join community</a>
+  </nav>
 
-  <!-- Main Body -->
-  <main class="container my-5">
-    <section class="mb-5">
-      <p class="fs-5">
-        Alexander Boiarinov is a producer and finance manager working in international media and finance sectors since 2014.
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-line"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Finance &amp; Project Management</p>
+      <h1 class="hero-title">
+        Clarity in<br />
+        <em>complex</em> finances.
+      </h1>
+      <p class="hero-desc">
+        Alexander Boiarinov is a producer and finance manager operating at the intersection of
+        <strong>international media</strong> and <strong>European finance</strong> since 2014.
+        Based in Berlin. Working globally.
       </p>
-      <p class="fs-5">
-        Helping expats and freelancers in Germany build confidence around their finances by creating
-        a community-based alternative where people can learn, share, and grow together, guided by professional expertise -
-        <strong>talktaxes network</strong> - from now on offering group and private chats, and open weekly online meetings
-        in Russian language (English version is currently in development).
-      </p>
-      <ul class="fs-5">
-        <li><strong>2014 - 2016:</strong> International Projects Manager at Alexandrinsky</li>
-        <li><strong>2016 - 2022:</strong> Producer and Finance Project Manager at BDT</li>
-        <li><strong>2022 - present:</strong>
-          <ul>
-            <li>Head of Finance at ITI Germany</li>
-            <li>Finance Project Manager for European Commission African-European Exchange Project “DECONFINING”</li>
-            <li>Finance Audit Manager for NEUSTART KULTUR program of Federal Culture and Media Ministry of Germany</li>
-            <li>Independent Producer, Project Manager, Finance and Tax Consultant</li>
-          </ul>
-        </li>
-      </ul>
-    </section>
-    <div class="text-center mb-5">
-      <a href="https://t.me/talktaxes" class="btn btn-lg px-4 btn-accent" target="_blank">Join tax & finance community</a>
+      <a href="https://t.me/talktaxes" target="_blank" class="btn-tg">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Join on Telegram
+    </a>
     </div>
-  </main>
-  <p class="text-center mb-5">
-    Powered by Telegram
-    <img src="Logo.png" alt="telegram" width="25" height=auto>
-  </p>
+  </section>
 
-  <!-- Footer -->
-  <footer class="bg-header py-4 border-top">
-    <div class="container">
-      <h5 class="footer-header">Impressum</h5>
-      <p class="mb-1">Diensteanbieter im Sinne des § 5 TMG:</p>
-      <p class="mb-1">Aleksandr Boiarinov Einzelunternehmer (freiberufliche Tätigkeit)</p>
-      <p class="mb-1">www.execmanage.de</p>
-      <p class="mb-1">12157 Berlin<br />Germany</p>
-      <p class="mb-1">E-mail: execmanage@icloud.com</p>
-      <p class="mb-1">Bevollmächtigte Vertreter: Aleksandr Boiarinov</p>
-      <p class="mb-1">Eingetragener Sitz: Deutschland</p>
-      <p class="mb-1">Registergericht: Finanzamt Steglitz</p>
-      <p class="mb-1">Steuernummer: 20/235/02505</p>
-      <p class="mb-0">Wirtschafts-ID: DE418676142</p>
+  <div class="divider"></div>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section">
+    <p class="section-label reveal">Experience</p>
+    <div class="timeline">
+
+      <div class="timeline-item reveal">
+        <p class="timeline-year">2014 – 2016</p>
+        <p class="timeline-role">International Projects Manager</p>
+        <p class="timeline-org">Alexandrinsky Theatre</p>
+      </div>
+
+      <div class="timeline-item reveal">
+        <p class="timeline-year">2016 – 2022</p>
+        <p class="timeline-role">Producer &amp; Finance Project Manager</p>
+        <p class="timeline-org">Bolshoi Drama Theatre (BDT)</p>
+      </div>
+
+      <div class="timeline-item reveal">
+        <p class="timeline-year">2022 – Present</p>
+        <p class="timeline-role">Senior Finance &amp; Project Roles</p>
+        <p class="timeline-org">Berlin-based, European scope</p>
+        <div class="timeline-sub">
+          <p class="timeline-sub-item">Head of Finance — ITI Germany</p>
+          <p class="timeline-sub-item">Finance Project Manager — European Commission / DECONFINING (African-European Exchange)</p>
+          <p class="timeline-sub-item">Finance Audit Manager — NEUSTART KULTUR, Federal Culture &amp; Media Ministry of Germany</p>
+          <p class="timeline-sub-item">Independent Producer, Project Manager, Finance &amp; Tax Consultant</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="community-band reveal">
+    <div>
+      <span class="community-tag">New initiative</span>
+      <h2 class="community-title">talktaxes network</h2>
+      <p class="community-desc">
+        Helping <strong>expats and freelancers in Germany</strong> build confidence around their finances —
+        a community-based space to learn, share, and grow together, guided by professional expertise.
+        Group &amp; private chats, open weekly online meetings in <strong>Russian</strong>
+        (English version in development).
+      </p>
+    </div>
+    <a href="https://t.me/talktaxes" target="_blank" class="btn-tg">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Join on Telegram
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <span class="footer-wordmark">exec <span>&&</span> manage</span>
+      <p class="footer-tagline">Finance management and project consulting across international media and European institutions.</p>
+    </div>
+
+    <div class="footer-imprint">
+      <h6>Impressum</h6>
+      <p>
+        Diensteanbieter im Sinne des § 5 TMG:<br />
+        Aleksandr Boiarinov Einzelunternehmer (freiberufliche Tätigkeit)<br />
+        www.execmanage.de · 12157 Berlin, Germany<br />
+        E-mail: execmanage@icloud.com<br />
+        Bevollmächtigte Vertreter: Aleksandr Boiarinov<br />
+        Registergericht: Finanzamt Steglitz<br />
+        Steuernummer: 20/235/02505 · Wirtschafts-ID: DE418676142
+      </p>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Aleksandr Boiarinov · execmanage.de</p>
+
+      <!-- Powered by Telegram & Claude -->
+      <div class="powered-by">
+        <span>Powered by</span>
+        <span class="powered-sep"></span>
+
+        <a href="https://telegram.org" target="_blank" class="powered-item tg" title="Telegram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#26a5e4">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+          Telegram
+        </a>
+
+        <span class="powered-sep"></span>
+
+        <a href="https://claude.ai" target="_blank" class="powered-item cl" title="Claude by Anthropic">
+          <svg width="14" height="14" viewBox="0 0 46 46" fill="none">
+            <rect width="46" height="46" rx="8" fill="#D97757"/>
+            <path d="M26.922 10H19.08L9 36h7.169l2.067-5.696h11.528L31.83 36H39L26.922 10zm-6.63 14.908 3.709-10.223 3.707 10.223h-7.416z" fill="white"/>
+          </svg>
+          Claude
+        </a>
+      </div>
     </div>
   </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          e.target.style.transitionDelay = (i * 0.07) + 's';
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+  </script>
 
 </body>
 </html>
